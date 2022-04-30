@@ -124,6 +124,39 @@
                     <span class="help is-danger" v-if="form.errors.has('event.title')"
                           v-text="form.errors.get('event.title')"></span>
                 </div>
+                 <div class="md-layout-item md-small-size-100 md-size-50">
+                    <md-field>
+                        <div class="md-field md-theme-default md-has-value">
+                            <label for="serviceDelivery">Service Delivery</label>
+                            <select class="select md-menu md-select"
+                                    v-model="form.event.serviceDelivery"
+                                    name="serviceDelivery" id="serviceDelivery" @change="form.errors.clear('event.serviceDelivery')">
+                                <option v-for="(serviceDelivery, index) in serviceDeliveries.items" :key="index"
+                                        :value="serviceDelivery.item">
+                                    {{serviceDelivery.item}}
+                                </option>
+                            </select>
+                        </div>
+                    </md-field>
+                    <span class="help is-danger" v-if="form.errors.has('event.serviceDelivery')"
+                          v-text="form.errors.get('event.serviceDelivery')"></span>
+                </div>
+              <div v-if="form.event.serviceDelivery=='Video Portal'" class="md-layout-item md-small-size-50 md-size-100">
+                    <md-field>
+                        <label for="meetingLink">Meeting Link</label>
+                         <md-input v-model="form.event.meetingLink" type="text" name="meetingLink" id="meetingLink" @input="form.errors.clear('event.meetingLink')"></md-input>
+                    </md-field>
+                    <span class="help is-danger" v-if="form.errors.has('event.meetingLink')"
+                          v-text="form.errors.get('event.meetingLink')"></span>
+                </div>
+                <div class="md-layout-item md-small-size-50 md-size-100">
+                    <md-field>
+                        <label for="capacity">Seat Capacity</label>
+                        <md-input v-model="form.event.capacity" type="number" name="capacity" id="capacity" @input="form.errors.clear('event.capacity')"></md-input>
+                    </md-field>
+                    <span class="help is-danger" v-if="form.errors.has('event.capacity')"
+                          v-text="form.errors.get('event.capacity')"></span>
+                </div>
 
                 <div class="md-layout-item md-small-size-100 md-size-100">
                     <md-field>
@@ -278,6 +311,12 @@
                 })
                 return funders
             },
+             serviceDeliveries() {
+      let serviceDeliveries = this.dropdowns.find(function (el) {
+        return el.name === "Service Delivery Method";
+      });
+      return serviceDeliveries;
+    },
 
             facilitators() {
                 let facilitators = this.staffList.filter(function (el) {
@@ -296,6 +335,7 @@
                     'description': '',
                     'location': '',
                     'funder': '',
+
                     event: {
                         'title': '',
                         'startDate': '',
@@ -306,6 +346,9 @@
                         'backgroundColor': '#1fbc30',
                         'borderColor': '#ffffff',
                         'textColor': '#ffffff',
+                        'meetingLink': '',
+                        'capacity': 0,
+                        'serviceDelivery':'',
                     },
                 }),
                 saveDisabled: false,
@@ -328,6 +371,7 @@
                     this.form.location = this.activityEdit.groupActivity.location
                     this.form.funder = this.activityEdit.groupActivity.funder
 
+
                     this.form.event.title = this.activityEdit.title
                     this.form.event.startDate = this.moment(this.activityEdit.start, "YYYY-MM-DD")
                     this.form.event.startTime = this.moment(this.activityEdit.start,"HH:mm")
@@ -336,6 +380,10 @@
                     this.form.event.backgroundColor = this.activityEdit.backgroundColor
                     this.form.event.borderColor = this.activityEdit.borderColor
                     this.form.event.textColor = this.activityEdit.textColor
+                    this.form.event.meetingLink = this.activityEdit.meetingLink
+                    this.form.event.capacity = this.activityEdit.capacity
+                    this.form.event.serviceDelivery = this.activityEdit.serviceDelivery
+
 
                 }
             },
@@ -344,6 +392,7 @@
                 if (this.activityEdit) {
                     this.form.put('api/groupActivities/' + this.activityEdit.id)
                         .then(response => {
+                            console.log("Update Response",response)
                             this.$store.dispatch('confirmSuccess', 'Group Activity Saved.')
                             this.update(response.data)
                             this.close()
@@ -356,6 +405,7 @@
                 } else {
                     this.form.post('api/groupActivities')
                         .then(response => {
+                             console.log("Save Response",response)
                             this.$store.dispatch('confirmSuccess', 'Group Activity Saved.')
                             this.update(response.data)
                             this.close()

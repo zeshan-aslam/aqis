@@ -90,7 +90,8 @@ class Client extends User
     }
     public function outcomes()
     {
-       return $this->belongsToMany(Outcome::class)->withPivot('created_at');
+        return $this->belongsToMany(Outcome::class);
+    //    return $this->belongsToMany(Outcome::class)->withPivot('created_at');
     }
     public function languages()
     {

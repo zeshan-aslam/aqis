@@ -17,7 +17,7 @@ class ClientsController extends Controller
     public function index()
     {
         // $clients = Client::all();
-         $clients = Client::with('user')->where('user_id','2')->orderBy('id', 'desc')->paginate(10);
+        $clients = Client::with('user')->orderBy('id', 'desc')->paginate(10);
         //$clients = Client::with('user')->orderBy('id', 'desc')->paginate(10);
         return $clients;
     }
@@ -27,7 +27,6 @@ class ClientsController extends Controller
 
         $resultClients = Client::where('wc_id','LIKE',$request->input('string').'%')
              ->with('user')
-             ->where('user_id',2)
              ->paginate(10);
 
         return $resultClients;

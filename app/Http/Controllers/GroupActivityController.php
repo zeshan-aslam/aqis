@@ -19,6 +19,7 @@ class GroupActivityController extends Controller
 
     public function store(Request $request)
     {
+        // return $request;
         $validation = $request->validate(
             [
                 'staff_id' => 'required',
@@ -31,6 +32,8 @@ class GroupActivityController extends Controller
                 'event.startDate' => 'required|date',
                 'event.startTime' => 'required|before:event.endTime',
                 'event.endTime' => 'required|after:event.startTime',
+                'event.serviceDelivery' => 'required|string',
+                'event.capacity' => 'required|string',
             ],
             [
                 'staff_id.required' => 'Please select a facilitator',
@@ -46,6 +49,8 @@ class GroupActivityController extends Controller
                 'event.startTime.before' => 'Start time has to be earlier than End time',
                 'event.endTime.required' => 'End time is required',
                 'event.endTime.after' => 'End time has to be later than Start time',
+                'event.capacity.required' => 'Seating Capacity is required',
+                'event.serviceDelivery.required' => 'Service Delivery Method is required',
             ]
         );
         $event = $request->event;
@@ -74,6 +79,9 @@ class GroupActivityController extends Controller
             'backgroundColor' => $event['backgroundColor'],
             'borderColor' => $event['borderColor'],
             'textColor' => $event['textColor'],
+            'meetingLink' => $event['meetingLink'],
+            'capacity' => intval($event['capacity']),
+            'serviceDelivery' => $event['serviceDelivery'],
         ]);
     }
 

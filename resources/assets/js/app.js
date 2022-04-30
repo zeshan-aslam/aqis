@@ -26,6 +26,7 @@ import MaterialDashboard from './material-dashboard'
 import Chartist from 'chartist'
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import VueHtmlToPaper from 'vue-html-to-paper';
+import { BootstrapVue, FormRatingPlugin } from 'bootstrap-vue'
 import { permissions } from './mixins/permissions'
 
 const router = new VueRouter({
@@ -54,7 +55,8 @@ const htmltoPaperOptions = {
     // '../sass/app.scss'
   ]
 }
-
+Vue.use(FormRatingPlugin)
+Vue.use(BootstrapVue)
 Vue.use(VueRouter)
 Vue.use(Vuex)
 Vue.use(MaterialDashboard)

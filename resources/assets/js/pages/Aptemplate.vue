@@ -301,7 +301,7 @@
     var pdfMake = require('pdfmake/build/pdfmake.js');
     var pdfFonts = require('pdfmake/build/vfs_fonts.js');
     pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
+import htmlToPdfmake from "html-to-pdfmake"
     import Addtemplatemodal from './Modals/Addtemplatemodal.vue'
 
     export default {
@@ -398,13 +398,24 @@
                         console.log(errors)
                     })
             },
-            downloadPdf(id) {
-                var docDefinition = {
-                    content: document.getElementById('pdfContent')
-                };
+            downloadPdf(id)
+ {
+      var head ="Document For Action Plan";
+      var headerText = htmlToPdfmake(head);
+      var docDefinition = {
+        pageSize: "A4",
+        pageMargins: [10, 60, 10, 40],
+        header: {
+          columns: [{ text: headerText, alignment: "center" ,margin:[12,20,30,20]}],
+        },
+        content: htmlToPdfmake(document.getElementById("aptemplate").innerHTML),
+        footer: {
+          columns: [{ text: "Footer Text", alignment: "center" }],
+        },
+      };
 
-                pdfMake.createPdf(docDefinition).download();
-            },
+      pdfMake.createPdf(docDefinition).open();
+    },
 
             editModal(name) {
                 switch (name) {

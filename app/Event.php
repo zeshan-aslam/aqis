@@ -17,6 +17,9 @@ class Event extends Model
         'backgroundColor',
         'borderColor',
         'textColor',
+        'meetingLink',
+        'capacity',
+        'serviceDelivery',
     ];
 
     public function groupActivity()

@@ -9,7 +9,9 @@ class Outcome extends Model
     protected $fillable = [
         'outcome',
         'category_id',
-        'status'
+        'status',
+        'client_id',
+        'notes'
     ];
 
     public function category()

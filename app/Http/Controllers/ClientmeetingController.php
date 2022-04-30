@@ -123,32 +123,47 @@ class ClientmeetingController extends Controller
           'staff_id.required' => 'The facilitator field is required.',
           'duration.regex'=>'The duration should be in the format of hh:mm'
         ]);
-
         $date = new Carbon($request->date);
-
-        $clientmeeting = Clientmeeting::findorFail($id);
-
         $duration = strlen($request->duration) == 4 ? 0 . $request->duration : $request->duration;
 
-        $clientmeeting = Clientmeeting::create([
-            'client_id' => $request->client_id,
-            'programName' => $request->programName,
-            'serviceProvided' => $request->serviceProvided,
-            'meetingLink' => $request->meetingLink,
-            'meetingStatus' => 'pending',
-            'type' => $request->type,
-            'date' => $date,
-            'status' => $request->status,
-            'serviceDelivery' => $request->serviceDelivery,
-            'location' => $request->location,
-            'funder' => $request->funder,
-            'staff_id' => $request->staff_id,
-            'notes' => $request->notes,
-            'duration'=> $duration,
-          ]);
+
+        $clientmeeting = Clientmeeting::findorFail($id);
+        $clientmeeting->client_id=$request->client_id;
+        $clientmeeting->programName=$request->programName;
+        $clientmeeting->serviceProvided= $request->serviceProvided;
+        $clientmeeting->meetingLink = $request->meetingLink;
+        $clientmeeting->status = 'pending';
+        $clientmeeting->type= $request->type;
+        $clientmeeting->date= $date;
+        $clientmeeting->serviceDelivery = $request->serviceDelivery;
+        $clientmeeting->location=$request->location;
+        $clientmeeting->funder =$request->funder;
+        $clientmeeting->staff_id= $request->staff_id;
+        $clientmeeting->notes= $request->notes;
+        $clientmeeting->duration= $duration;
+        $clientmeeting ->update();
+
+
+        // $clientmeeting = Clientmeeting::create([
+        //     'client_id' => $request->client_id,
+        //     'programName' => $request->programName,
+        //     'serviceProvided' => $request->serviceProvided,
+        //     'meetingLink' => $request->meetingLink,
+        //     'meetingStatus' => 'pending',
+        //     'type' => $request->type,
+        //     'date' => $date,
+        //     'status' => $request->status,
+        //     'serviceDelivery' => $request->serviceDelivery,
+        //     'location' => $request->location,
+        //     'funder' => $request->funder,
+        //     'staff_id' => $request->staff_id,
+        //     'notes' => $request->notes,
+        //     'duration'=> $duration,
+        //   ]);
+
           if($request->serviceDelivery=="Video Portal"){
-        //    $user= \App\User::where(['client_id'=>$request->client_id])->first();
-        $user= \App\User::where(['client_id'=>3432])->first();
+         $user= \App\User::where(['client_id'=>$request->client_id])->first();
+       // $user= \App\User::where(['client_id'=>3432])->first();
 
            Mail::to($user->email)
                 ->queue(new meetingLink($user, $clientmeeting));

@@ -8,6 +8,18 @@
       >
       </md-progress-spinner>
     </div>
+
+    <AddOutcomeModal
+      :client_id="client.id"
+      :editing="true"
+      @close="closeModal('addOutcome')"
+      v-if="showAddOutcomeModal">
+      </AddOutcomeModal>
+      <FeedbackModal
+      :client_id="client.id"
+      @close="closeModal('feedbackModal')"
+      v-if="showfeedbackModal"
+    ></FeedbackModal>
     <AddClientModal
       :client_id="client.id"
       :editing="true"
@@ -71,7 +83,7 @@
 
         <md-tabs class="md-success" md-alignment="left">
 
-          <md-tab id="tab-home" md-label="Profile" md-icon="account_box" v-on:click="showProfile=!showProfile">
+          <md-tab id="tab-home" md-label="Profile" md-icon="account_box">
 
 
         <div v-if="!showProfile">
@@ -544,6 +556,14 @@
                         >
                           <span><i class="fas fa-pencil-alt"></i></span>
                         </button>
+                          <button
+                           v-if="showforAdmin"
+                          @click="openModal('feedbackModal',meeting)"
+                          class="button is-success"
+                          v-show="$root.canDelete('clients')"
+                        >
+                          <span><i class="far fa-solid fa-star"></i></span>
+                        </button>
                         <button
                           @click="deleteMeeting(index, meeting.id)"
                           class="button is-danger"
@@ -627,9 +647,28 @@
               <!-- <div class="panel-block"> -->
               <div class="columns">
                 <div class="column is-full">
+
                   <div :key="index" v-for="(category, index) in categories">
+
                     <div @click="collapse" class="header-collapsible">
-                      {{ category.name }}
+                      {{ category.name }}  <div
+                        class="md-layout-item md-medium-size-100 md-size-100"
+                      >
+                        <a
+                         @click="openModal('addOutcome')"
+                         v-if="$root.canWrite('clients')"
+                          class="button is-success"
+                          type="button"
+
+                          :disabled="saveDisabled"
+                        >
+                        <span class="icon is-small">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                          <span>Add </span>
+
+                        </a>
+                      </div>
                     </div>
                     <div class="content-collapsible">
                       <div
@@ -667,6 +706,7 @@
                       </div>
                     </div>
                   </div>
+
                 </div>
               </div>
               <!-- </div> -->
@@ -720,7 +760,7 @@
                           form="addDocsForm"
                           :disabled="saveDisabled"
                         >
-                          <span>Save </span>
+                          <span> Add </span>
                           <span class="icon is-small">
                             <i class="far fa-save"></i>
                           </span>
@@ -731,7 +771,7 @@
               </div>
             </nav>
             <nav class="panel">
-             
+
 
                                 <!-- <div class="container is-fluid"> -->
 
@@ -780,6 +820,7 @@
 
 <script>
 import Form from "../Forms.js";
+
 import AddClientModal from "./Modals/AddClientModal.vue";
 import AddEducationModal from "./Modals/Addeducationmodal.vue";
 import AddEmploymentModal from "./Modals/Addemploymentmodal.vue";
@@ -789,6 +830,8 @@ import AddWorkshopModal from "./Modals/Addworkshopmodal.vue";
 import MeetingResourceModal from "./Modals/MeetingResourceModal.vue";
 import WorkshopResourceModal from "./Modals/WorkshopResourceModal.vue";
 import PhoneFormater from "../phoneNumberFormat";
+import AddOutcomeModal from "./Modals/AddOutcomeModal.vue";
+import FeedbackModal from "./Modals/FeedbackModal.vue";
 
 //   import { mapActions } from 'vuex'
 import Swal from "sweetalert2";
@@ -805,11 +848,18 @@ export default {
     AddTrainingModal,
     MeetingResourceModal,
     WorkshopResourceModal,
-    NavTabsCard
+    FeedbackModal,
+    AddOutcomeModal,
+    NavTabsCard,
   },
-  created() {
+created() {
     this.fetchData(this.clientID);
     this.getDocs();
+    if(this.$store.state.user.role=='Admin' || this.$store.state.user.role=='Facilitator')
+    {
+      this.showforAdmin=true;
+
+    }
   },
   data() {
     return {
@@ -819,6 +869,8 @@ export default {
       client_id: this.$route.params.id,
       doc_file:'',
       docs: '',
+      showfeedbackModal:false,
+      showAddOutcomeModal: false,
       showModal: true,
       showProfile: false,
       showClientModal: false,
@@ -986,6 +1038,13 @@ this.getDocs()
     openModal(name) {
 
       switch (name) {
+            case "feedbackModal":
+          this.meetingEdit = null;
+          this.showfeedbackModal = true;
+          break;
+        case "addOutcome":
+          this.showAddOutcomeModal = true;
+          break;
         case "clientModal":
           this.showClientModal = true;
           break;
@@ -1021,6 +1080,13 @@ this.getDocs()
     closeModal(name) {
 
       switch (name) {
+        case "feedbackModal":
+          this.showfeedbackModal = false;
+          this.fetchData(this.clientID);
+          break;
+    case "addOutcome":
+          this.showAddOutcomeModal = false;
+          break;
         case "clientModal":
           this.showClientModal = false;
           this.fetchData(this.clientID);
