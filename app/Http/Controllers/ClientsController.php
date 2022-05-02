@@ -17,8 +17,13 @@ class ClientsController extends Controller
     public function index()
     {
         // $clients = Client::all();
+<<<<<<< HEAD
         $clients = Client::with('user')->orderBy('id', 'desc')->paginate(10);
         //$clients = Client::with('user')->orderBy('id', 'desc')->paginate(10);
+=======
+        // $clients = Client::with('user')->where('user_id','2')->orderBy('id', 'desc')->paginate(10);
+        $clients = Client::with('user')->orderBy('id', 'desc')->paginate(10);
+>>>>>>> c3889b9b39e6efdbd670f18d768451e6573291a2
         return $clients;
     }
 
