@@ -414,7 +414,7 @@ import htmlToPdfmake from "html-to-pdfmake"
         },
       };
 
-      pdfMake.createPdf(docDefinition).open();
+      pdfMake.createPdf(docDefinition).download();
     },
 
             editModal(name) {
