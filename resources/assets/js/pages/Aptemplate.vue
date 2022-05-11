@@ -51,7 +51,8 @@
                                         </tr>
                                          <tr>
                                             <th>Previous NOC</th>
-                                            <td v-if="aptemplate.prevNoc"><strong> {{aptemplate.prevNoc}} </strong></td>
+                                            <td v-if="aptemplate.prevNoc!=''"><strong> {{aptemplate.prevNoc}} </strong></td>
+                                            <td v-if="aptemplate.prevNoc==''"><strong> Not Assign </strong></td>
                                         </tr>
                                         <tr v-if="aptemplate.noc">
                                             <th>Category</th>
